@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
 import { useAuth0, Auth0Provider } from "@auth0/auth0-react";
@@ -18,22 +18,61 @@ const UserDisplay = (props: {
         <img className="avatar" src={user.picture} alt="Avatar from Gravatar" />
 
         <table>
-          <tr>
-            <th>key</th>
-            <th>value</th>
-          </tr>
-
-          {Object.keys(user).map((key) => (
+          <thead>
             <tr>
-              <td>{key}</td>
-              <td>{user[key]}</td>
+              <th>key</th>
+              <th>value</th>
             </tr>
-          ))}
+          </thead>
+          <tbody>
+            {Object.keys(user).map((key) => (
+              <tr key={key}>
+                <td>{key}</td>
+                <td>{user[key]}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>
   );
 };
+
+function AccessTokenDisplay(props: {
+  getAccessTokenSilently: () => Promise<string>;
+  isAuthenticated: boolean;
+}): JSX.Element {
+  const [accessToken, setAccessToken] = useState("");
+  useEffect(() => {
+    async function getAccessToken() {
+      if (!props.isAuthenticated) {
+        return;
+      }
+      // Get the access token from Auth0
+      const token = await props.getAccessTokenSilently();
+      // Store the token and trigger a re-render
+      setAccessToken(token);
+    }
+    // Run async access token fetching function
+    getAccessToken();
+    // Run only when the props.isAuthenticated variable changes
+  }, [props.isAuthenticated]);
+  return (
+    <div>
+      <h2>Access Token</h2>
+      <label htmlFor="accessTokenBox">Access Token:</label>
+      {/* Using a text area because it's easy to copy from */}
+      <textarea
+        id="accessTokenBox"
+        value={accessToken}
+        onChange={() => {
+          // Dont allow input into the textarea
+          setAccessToken(accessToken);
+        }}
+      ></textarea>
+    </div>
+  );
+}
 
 function LoginDisplay(): JSX.Element {
   const {
@@ -42,10 +81,12 @@ function LoginDisplay(): JSX.Element {
     isAuthenticated,
     error,
     logout,
+    getAccessTokenSilently,
   } = useAuth0();
 
   return (
     <div className="App">
+      <h1>React + Auth0 + Blast Furnace</h1>
       {/* Displaly if the user is logged in */}
       <p>Error: {error?.message}</p>
       <p>Is Logged In : {isAuthenticated ? "yes" : "no"}</p>
@@ -75,6 +116,10 @@ function LoginDisplay(): JSX.Element {
       <hr />
 
       <UserDisplay user={user} isAuthenticated={isAuthenticated} />
+      <AccessTokenDisplay
+        getAccessTokenSilently={getAccessTokenSilently}
+        isAuthenticated={isAuthenticated}
+      />
     </div>
   );
 }
@@ -85,6 +130,7 @@ function App(): JSX.Element {
       domain="kleeut-blastfurnace.au.auth0.com"
       clientId="zf8tN3Q290OkKxakrABrxeDpWTjks1Rp"
       redirectUri={window.location.origin}
+      audience="BlastfurnaceAPI"
     >
       {/* Render the login display */}
       <LoginDisplay />

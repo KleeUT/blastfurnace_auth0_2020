@@ -32,10 +32,19 @@ img.avatar {
   border-radius: 100px;
   border: 4px solid darkorange;
   box-shadow: 3px 3px rgb(255, 232, 190);
+  margin: 2rem;
 }
 
 .userDisplay {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+}
+label {
+  display: block;
+}
+textarea {
+  width: 100%;
+  min-height: 200px;
 }
