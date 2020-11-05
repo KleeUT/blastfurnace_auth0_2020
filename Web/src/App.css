@@ -1,0 +1,41 @@
+.App {
+  text-align: center;
+  max-width: 920px;
+  margin: auto;
+  font-family: sans-serif;
+}
+
+button {
+  padding: 1rem;
+  font-size: 1rem;
+  background: #333;
+  border: 0;
+  box-shadow: 3px 3px rgb(255, 232, 190);
+  color: darkorange;
+  cursor: pointer;
+}
+
+table {
+  text-align: left;
+  border-collapse: collapse;
+  width: 600px;
+}
+tr:nth-child(even) {
+  background: #eee;
+}
+td {
+  border-bottom: 1px solid darkorange;
+}
+img.avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  border: 4px solid darkorange;
+  box-shadow: 3px 3px rgb(255, 232, 190);
+}
+
+.userDisplay {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
