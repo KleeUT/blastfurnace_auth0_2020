@@ -16,7 +16,7 @@ Start with the [Workshop Overview](workshop/0.Overview.md)
 
 # Slides
 
-Slides for the introduction talk can be found on [Google Slides]()
+Slides for the introduction talk can be found on [Google Slides](https://docs.google.com/presentation/d/1nw9UFWGPhdwGkM1GjOxzX4vSH-rJoTgYZ3oYjzRYW3s/edit?usp=sharing)
 
 # Getting help
 
