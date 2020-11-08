@@ -19,9 +19,7 @@
     "ts-node": "^9.0.0"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "express-jwt": "^6.0.0",
-    "jwks-rsa": "^1.11.0"
+    "express": "^4.17.1"
   },
   "nodemonConfig": {
     "ignore": [
