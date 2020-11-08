@@ -48,3 +48,16 @@ textarea {
   width: 100%;
   min-height: 200px;
 }
+
+ol {
+  text-align: left;
+  overflow-wrap: break-word;
+}
+ol :nth-child(even) {
+  background: #eee;
+}
+
+li {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}

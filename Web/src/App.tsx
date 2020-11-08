@@ -42,6 +42,12 @@ function AccessTokenDisplay(props: {
   getAccessTokenSilently: () => Promise<string>;
   isAuthenticated: boolean;
 }): JSX.Element {
+  const [fetching, setFetching] = useState(false);
+  const [shouldFetch, setShouldFetch] = useState(false);
+  const [secretData, setSecretData] = useState<{
+    secrets: string[];
+    status: number;
+  }>({ secrets: [], status: 0 });
   const [accessToken, setAccessToken] = useState("");
   useEffect(() => {
     async function getAccessToken() {
@@ -56,7 +62,47 @@ function AccessTokenDisplay(props: {
     // Run async access token fetching function
     getAccessToken();
     // Run only when the props.isAuthenticated variable changes
-  }, [props.isAuthenticated]);
+  }, [props]);
+
+  useEffect(() => {
+    async function getData() {
+      // Only fetch when we're not already fetching and when the Fetch Secrets button is pressed
+      if (fetching || !shouldFetch) {
+        return;
+      }
+      // Update the state so we don't fetch multiple times.
+      setFetching(true);
+      setShouldFetch(false);
+
+      // request secretes from the server and wait for the response
+      const response = await fetch("http://localhost:8080/private", {
+        headers: {
+          /* Add the Authorization header to the request
+          Note the value needs to be the word "Bearer" followed by a space 
+          and then the access token */
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      // check the response to see if it's a 200 response
+      if (response.ok) {
+        // on successful response read the json payload.
+        const secretResult = (await response.json()) as { secrets: string[] };
+        // update the secretData with the data and response
+        setSecretData({
+          secrets: secretResult.secrets,
+          status: response.status,
+        });
+      } else {
+        // if the request is rejected set the status.
+        setSecretData({ secrets: [], status: response.status });
+      }
+      // update the state to mark that fetching is complete
+      setFetching(false);
+    }
+    // run the async function
+    getData();
+    // Run this only when fetching or shouldFetch changes
+  }, [fetching, shouldFetch]);
   return (
     <div>
       <h2>Access Token</h2>
@@ -70,6 +116,22 @@ function AccessTokenDisplay(props: {
           setAccessToken(accessToken);
         }}
       ></textarea>
+      {/* Add a button to fetch the secrets */}
+      {/* On click update the state to start fetching */}
+      <button onClick={() => setShouldFetch(true)} disabled={fetching}>
+        Fetch Secrets
+      </button>
+      {/* Display the secret result */}
+      <p>
+        {/* Show the status unless there is a fetch in progress */}
+        {fetching ? "Loading" : `status: ${secretData.status}`}
+        {/* Display a list of the secrets */}
+        <ol>
+          {secretData.secrets.map((secret) => (
+            <li>{secret}</li>
+          ))}
+        </ol>
+      </p>
     </div>
   );
 }
